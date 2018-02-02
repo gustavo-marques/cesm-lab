@@ -69,8 +69,6 @@ def parseCommandLine():
       action="store_true")
 
   optCmdLineArgs = parser.parse_args()
-  global case_name
-  case_name = optCmdLineArgs.case_name
   driver(optCmdLineArgs)
 
 #-- This is where all the action happends, i.e., functions for each diagnostic are called.
@@ -208,7 +206,6 @@ def mean_latlon_plot(args, grd, variables):
         raise NameError('Variable {} does not exist in {} or {}!'.format(var,args.surface_file,args.forcing_file))
 
       if args.savefigs:    
-        #long_name = nc.variables[var].long_name
         m6plot.xyplot( data , grd.geolon, grd.geolat, area=grd.Ah,
           suptitle=args.case_name,
           title=r'%s, [%s] averaged over years %i-%i'%(var,units,args.year_start,args.year_end),

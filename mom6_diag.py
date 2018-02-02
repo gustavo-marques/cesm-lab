@@ -207,13 +207,20 @@ def mean_latlon_plot(args, grd, variables):
       else:
         raise NameError('Variable {} does not exist in {} or {}!'.format(var,args.surface_file,args.forcing_file))
 
-        
-      #long_name = nc.variables[var].long_name
-      m6plot.xyplot( data , grd.geolon, grd.geolat, area=grd.Ah,
-        suptitle=case_name,
-        title=r'%s, [%s] averaged over years %i-%i'%(var,units,args.year_start,args.year_end),
-        extend='both',
-        save=filename)
+      if args.savefigs:    
+        #long_name = nc.variables[var].long_name
+        m6plot.xyplot( data , grd.geolon, grd.geolat, area=grd.Ah,
+          suptitle=case_name,
+          title=r'%s, [%s] averaged over years %i-%i'%(var,units,args.year_start,args.year_end),
+          extend='both',
+          save=filename)
+      else:
+        m6plot.xyplot( data , grd.geolon, grd.geolat, area=grd.Ah,
+          suptitle=case_name,
+          title=r'%s, [%s] averaged over years %i-%i'%(var,units,args.year_start,args.year_end),
+          extend='both',
+          show=True)
+     
 
   nc1.close(); nc2.close()
   return

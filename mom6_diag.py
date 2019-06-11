@@ -1,4 +1,4 @@
-#!/usr/bin/env /home/gmarques/miniconda2/bin/python
+#!/usr/bin/env python
 
 # generates MOM6 diagnostics
 
@@ -62,9 +62,9 @@ def parseCommandLine():
   parser.add_argument('-year_end', type=int, default=100,
       help='''End year to compute averages. Default is 100.''')
 
-  parser.add_argument('-to_netcdf', help='''Save data into a netCDF file.''', 
+  parser.add_argument('-to_netcdf', help='''Save data into a netCDF file.''',
       action="store_true")
-  
+
   parser.add_argument('-savefigs', help='''Save figures in a PNG format.''',
       action="store_true")
 
@@ -110,7 +110,7 @@ def mean_latlon_time_series(args, grd, variables):
       elif var in nc2.variables:
         units.append(nc2.variables[var].attrs['units'])
       else:
-        print 'Error!'
+        print('Error!')
 
     # create Dataset
     dtime = nc1.time[0:tm:args.ndays].values
@@ -122,7 +122,7 @@ def mean_latlon_time_series(args, grd, variables):
       for var in variables:
         if var in nc1.variables:
           data = nc1.variables[var][t,:].values
-        else: 
+        else:
           data = nc2.variables[var][t,:].values
 
         data = np.ma.masked_invalid(data)
@@ -187,9 +187,9 @@ def mean_latlon_plot(args, grd, variables):
 
   ti = args.year_start
   tf = args.year_end
- 
-  # TODO: check if data includes years between ti and tf 
- 
+
+  # TODO: check if data includes years between ti and tf
+
   for var in variables:
     filename = str('PNG/%s.png' % (var))
     if os.path.isfile(filename):
@@ -205,7 +205,7 @@ def mean_latlon_plot(args, grd, variables):
       else:
         raise NameError('Variable {} does not exist in {} or {}!'.format(var,args.surface_file,args.forcing_file))
 
-      if args.savefigs:    
+      if args.savefigs:
         m6plot.xyplot( data , grd.geolon, grd.geolat, area=grd.Ah,
           suptitle=args.case_name,
           title=r'%s, [%s] averaged over years %i-%i'%(var,units,args.year_start,args.year_end),
@@ -217,21 +217,21 @@ def mean_latlon_plot(args, grd, variables):
           title=r'%s, [%s] averaged over years %i-%i'%(var,units,args.year_start,args.year_end),
           extend='both',
           show=True)
-     
+
 
   nc1.close(); nc2.close()
   return
 
 # -- create a xarray Dataset given variables, units and time
 def create_xarray_dataset(variables,units,time):
-   ds = xr.Dataset() 
+   ds = xr.Dataset()
    # TODO: fix the time using pandas, # of years are limited, see link below
    # http://pandas-docs.github.io/pandas-docs-travis/timeseries.html#timestamp-limitations
    # It should be days since 0001-01-01 00:00:00
    dt=(time[1]-time[0]).days
    f=str(int(dt))+'D'
    ds.coords['time'] = pd.date_range(str(time[0]),freq=f, periods=len(time))
-   print "ds.coords['time']",ds.coords['time']
+   print("ds.coords['time']",ds.coords['time'])
    #ds.coords['time'].attrs = {'units': 'days since 1900-01-01 00:00:00'}
    stats = ['min','max','mean','std','rms']
    ds.coords['stats'] = stats

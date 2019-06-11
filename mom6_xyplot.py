@@ -59,7 +59,7 @@ def parseCommandLine():
 def driver(args):
   os.system('mkdir PNG')
   # mom6 grid
-  grd = mom6_diag.MOM6grid()
+  grd = mom6_diag.MOM6grid(args.geometry)
 
   latlon_plot(args,args.outfile,grd,args.variable)
 
@@ -68,7 +68,7 @@ def driver(args):
 # -- time-mean latlon plot
 def latlon_plot(args, ncfile, grd, variable):
   nc = MFDataset(ncfile)
-  time = nc.variables['time'][16400:]
+  time = nc.variables['Time'][:]
   tm = len(time)
   for var in nc.variables:
     if var in variable:
@@ -78,7 +78,7 @@ def latlon_plot(args, ncfile, grd, variable):
       elif var == 'SSS':
         clim=[30.75,38.0]
       elif var == 'SST':
-        clim = [-1,29]
+        clim = [-1.5,31]
       elif var == 'MLD_003':
         clim = [0,2000]
 
@@ -88,7 +88,7 @@ def latlon_plot(args, ncfile, grd, variable):
           print("File {} already exists! Moving to the next one...\n".format(filename))
         else:
           print ("time index {} of {}".format(t, tm))
-          data = nc.variables[var][t+16400,:]
+          data = nc.variables[var][t,:]
           units = nc.variables[var].units
           #TODO: convert days to date
           m6plot.xyplot( data , grd.geolon, grd.geolat, area=grd.Ah,
